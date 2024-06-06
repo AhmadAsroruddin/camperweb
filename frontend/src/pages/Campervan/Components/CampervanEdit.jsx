@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { IconArrowLeft } from "@tabler/icons-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-import { createTravelAction } from "../slice/slice";
-import Loading from '../../../shared/Animation/Loading';
+import { useDispatch, useSelector } from "react-redux";
+import { updateTravelByIdAction, getTravelDetailById } from "../slice/slice";
+import Loading from "../../../shared/Animation/Loading";
+// import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
-  ownerId: z.string(),
   category: z.string().min(1, { message: "Category cannot be empty" }),
   description: z.string().min(1, { message: "Description cannot be empty" }),
   address: z.string().min(1, { message: "Address cannot be empty" }),
@@ -17,58 +18,71 @@ const schema = z.object({
   city: z.string().min(1, { message: "City cannot be empty" }),
   name: z.string().min(1, { message: "Name cannot be empty" }),
   province: z.string().min(1, { message: "Province cannot be empty" }),
-  contactInfo: z.string().min(1, { message: "Contact info cannot be empty" }),
-  price: z.string().min(1, { message: "Price cannot be empty" }),
-  imageUrl: z.string().url({ message: "Invalid image URL" }),
 });
 
-const TravelForm = () => {
+const TravelEdit = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+//   const history = useHistory();
+  const { travelId } = useParams();
+  const TravelDetail = useSelector((state) => state.travel.travelDetail);
   const isLoading = useSelector((state) => state.travel.loading);
+  const error = useSelector((state) => state.travel.error);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      ownerId: localStorage.getItem('userId'),
+      category: TravelDetail?.category || "",
+      description: TravelDetail?.description || "",
+      address: TravelDetail?.address || "",
+      email: TravelDetail?.email || "",
+      city: TravelDetail?.city || "",
+      name: TravelDetail?.name || "",
+      province: TravelDetail?.province || "",
     },
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (travelId) {
+      dispatch(getTravelDetailById(travelId));
+    }
+  }, [dispatch, travelId]);
 
-  const onSubmit = async (data) => {
-    console.log("Form Submitted", data);
+  const onSubmit =  (data) => {
     try {
-      dispatch(createTravelAction(data));
-      navigate("/travels", { replace: true });
-      window.location.reload();
+       dispatch(updateTravelByIdAction({ travelId, payload: data }));
+       navigate('/travels')
     } catch (error) {
-      console.error(error);
+      console.error("Error updating travel:", error);
     }
   };
-
-  useEffect(() => {
-    console.log(errors); // Tambahkan log ini untuk melihat error validasi
-  }, [errors]);
 
   if (isLoading) {
     return <Loading />;
   }
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!TravelDetail) {
+    return <div>No Travel Detail found</div>;
+  }
+
   return (
     <div className="py-10 font-urbanist container mx-auto">
       <Link
-        to="/travels"
+        to={`/travels/${travelId}`}
         className="flex items-center text-primary hover:text-primary-dark transition duration-300 ease-out mb-4"
       >
         <IconArrowLeft className="mr-2" />
-        Back
+        Back to Travel Detail
       </Link>
-
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-4">Travel Form</h1>
+      <div className="bg-white shadow-lg rounded-lg p-6 relative">
+        <h1 className="text-3xl font-bold mb-4">Edit Travel</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div className="relative">
-            <label className="block text-gray-700">Category</label>
+            <label htmlFor="category" className="block text-gray-700">Category</label>
             <input
               id="category"
               {...register("category")}
@@ -83,7 +97,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">Description</label>
+            <label htmlFor="description" className="block text-gray-700">Description</label>
             <textarea
               id="description"
               {...register("description")}
@@ -97,7 +111,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">Address</label>
+            <label htmlFor="address" className="block text-gray-700">Address</label>
             <input
               id="address"
               {...register("address")}
@@ -112,7 +126,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-gray-700">Email</label>
             <input
               id="email"
               {...register("email")}
@@ -127,7 +141,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">City</label>
+            <label htmlFor="city" className="block text-gray-700">City</label>
             <input
               id="city"
               {...register("city")}
@@ -142,7 +156,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">Name</label>
+            <label htmlFor="name" className="block text-gray-700">Name</label>
             <input
               id="name"
               {...register("name")}
@@ -157,7 +171,7 @@ const TravelForm = () => {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700">Province</label>
+            <label htmlFor="province" className="block text-gray-700">Province</label>
             <input
               id="province"
               {...register("province")}
@@ -171,56 +185,12 @@ const TravelForm = () => {
             )}
           </div>
 
-          <div className="relative">
-            <label className="block text-gray-700">Contact Info</label>
-            <input
-              id="contactInfo"
-              {...register("contactInfo")}
-              type="text"
-              className={`w-full p-2 border border-gray-300 rounded ${errors.contactInfo ? "border-red-500" : ""}`}
-            />
-            {errors.contactInfo && (
-              <div className="text-red-500 text-xs mt-1">
-                {errors.contactInfo.message}
-              </div>
-            )}
-          </div>
-
-          <div className="relative">
-            <label className="block text-gray-700">Price</label>
-            <input
-              id="price"
-              {...register("price")}
-              type="text"
-              className={`w-full p-2 border border-gray-300 rounded ${errors.price ? "border-red-500" : ""}`}
-            />
-            {errors.price && (
-              <div className="text-red-500 text-xs mt-1">
-                {errors.price.message}
-              </div>
-            )}
-          </div>
-
-          <div className="relative">
-            <label className="block text-gray-700">Image URL</label>
-            <input
-              id="imageUrl"
-              {...register("imageUrl")}
-              type="text"
-              className={`w-full p-2 border border-gray-300 rounded ${errors.imageUrl ? "border-red-500" : ""}`}
-            />
-            {errors.imageUrl && (
-              <div className="text-red-500 text-xs mt-1">
-                {errors.imageUrl.message}
-              </div>
-            )}
-          </div>
-
           <button
             type="submit"
-            className="bg-primary text-white py-2 px-4 rounded"
+            className="bg-primary text-white py-2 px-4 rounded flex items-center"
           >
-            Submit
+            {/* <IconSave className="mr-2" /> */}
+            Save Changes
           </button>
         </form>
       </div>
@@ -228,4 +198,4 @@ const TravelForm = () => {
   );
 };
 
-export default TravelForm;
+export default TravelEdit;

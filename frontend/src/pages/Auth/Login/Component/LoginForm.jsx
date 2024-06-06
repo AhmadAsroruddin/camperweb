@@ -49,6 +49,7 @@ const LoginForm = () => {
         const token = response.data.token;
         console.log('Token:', token);
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', response.data.userId)
         // navigate("/home");
       }
     } catch (error) {

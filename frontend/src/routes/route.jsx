@@ -7,6 +7,7 @@ import TravelList from "../pages/Campervan/Components/CampervanList";
 import Travels from "../pages/Campervan/Travels";
 import TravelDetail from "../pages/Campervan/Components/CampervanDetail";
 import CampervanForm from "../pages/Campervan/Components/CampervanForm"
+import CampervanEdit from "../pages/Campervan/Components/CampervanEdit"
 
 const router = createBrowserRouter([
   {
@@ -36,8 +37,11 @@ const router = createBrowserRouter([
   {
     path: "/create-camper",
     element: <CampervanForm/>
+  },
+  {
+    path:"/campervan-edit/:travelId",
+    element : <CampervanEdit/>
   }
-  
 
   
 ]);

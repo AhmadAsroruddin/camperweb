@@ -31,12 +31,24 @@ const TravelService = () => {
         return response.data.data;
     }
 
+    const updateTravelById = async (travelId, payload) => {
+        try {
+          const response = await axiosInstance.put(`/campervan/${travelId}`, payload);
+          console.log(`Updated travel data (${travelId}):`, response.data);
+          return response.data;
+        } catch (error) {
+          console.error(`Error updating travel data (${travelId}):`, error);
+          throw error;
+        }
+      };    
+
     return {
         createTravel,
         getAllData,
         getTravelById,
         getTravelByUserId,
-        getAllParticipantByTripId
+        getAllParticipantByTripId,
+        updateTravelById
     }
 }
 
