@@ -9,7 +9,11 @@ module.exports = mongoose =>{
             email : String,
             city: String,
             name :String,
-            province :String
+            province :String,
+            ownerId:String,
+            contactInfo:String,
+            price: String,
+            imageUrl : String,
         },
         {
             timestamps: true

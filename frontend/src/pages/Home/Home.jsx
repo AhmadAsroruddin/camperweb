@@ -5,7 +5,7 @@ import NavbarLogin from "../../shared/Navbar/NavbarLogin";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../Auth/services/AuthServices";
 import HeroHome from "./Component/HeroHome";
-
+import TravelList from "../Campervan/Components/CampervanList"
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,8 +21,8 @@ const Home = () => {
     <>
       <NavbarLogin textColor="text-white" logo={logoWhite} bgColor='bg-red bg-opacity-50' />
       <HeroHome />
-      {/* <TravelList limit={4} />
-      <NewsList limit={1} /> */}
+      <TravelList limit={4} />
+      {/* <NewsList limit={1} /> */}
     </>
   );
 };
