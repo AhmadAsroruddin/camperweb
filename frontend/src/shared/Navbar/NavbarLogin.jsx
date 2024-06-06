@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import laut from "../../assets/mas-laut.jpg";
-import { getUserProfileAction } from "../../pages/UserProfile/slice/slice";
+// import { getUserProfileAction } from "../../pages/UserProfile/slice/slice";
 import { useDispatch, useSelector } from "react-redux";
 import AuthService from "../../pages/Auth/services/AuthServices";
 
@@ -9,11 +9,11 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const dispatch = useDispatch();
-  const userProfile = useSelector((state) => state.userProfile.userProfile);
-  const isLoading = useSelector((state) => state.userProfile.isLoading);
+  // const userProfile = useSelector((state) => state.userProfile.userProfile);
+  // const isLoading = useSelector((state) => state.userProfile.isLoading);
 
   useEffect(() => {
-    dispatch(getUserProfileAction());
+    // dispatch(getUserProfileAction());
   }, [dispatch]);
 
   const [open, setOpen] = useState(false);
@@ -78,7 +78,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
                 className="flex items-center gap-[15px] relative"
                 onClick={showDropDown}
               >
-                <p>{isLoading ? 'Loading...' : userProfile?.fullName || 'Guest'}</p>
+                <p>{'Guest'}</p>
                 <div className="h-[50px] w-[50px] rounded-full bg-primary cursor-pointer flex items-center justify-center relative">
                   <button
                     data-bs-toggle="dropdown"
