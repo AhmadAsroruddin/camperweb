@@ -4,7 +4,8 @@ module.exports = app =>{
 
     route.post("/register", auth.create);
     route.post("/login", auth.login);
-
+    route.get("/:id", auth.getUserData);
+    
     app.use("/auth", route);
 
 

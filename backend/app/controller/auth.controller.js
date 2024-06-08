@@ -45,3 +45,11 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getUserData = async (req, res) =>{
+    const id = req.params.id;
+    User.findById(id) 
+    .then(data => res.send(data))
+    .catch(err => res.status(500).send({message : err.message}));
+
+}
