@@ -6,7 +6,7 @@ module.exports = app =>{
     route.post("/", campervan.create);
     route.get("/:id", campervan.findById);
     route.put("/:id", campervan.update);
-    route.delete("/:id", campervan.delete);
+    route.delete("/delete/:id", campervan.delete);
 
     app.use("/campervan", route);
 

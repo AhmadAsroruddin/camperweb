@@ -25,7 +25,7 @@ exports.create = async(req, res) =>{
     }
 }
 
-exports.login = async(req, res)=>{
+exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -40,8 +40,8 @@ exports.login = async(req, res)=>{
         }
 
         const token = jwt.sign({ userId: user._id }, 'your_jwt_secret_key', { expiresIn: '1h' });
-        res.status(200).json({ token });
+        res.status(200).json({ token, userId: user._id });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
