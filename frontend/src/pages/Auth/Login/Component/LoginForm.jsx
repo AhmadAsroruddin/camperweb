@@ -10,7 +10,10 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginAction, getUserDataAction } from "../../slice/authSlice";
 import AuthService from "../../services/AuthServices";
+import { validateTokenAction } from "../../slice/authSlice";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const schema = z.object({
@@ -27,6 +30,7 @@ const schema = z.object({
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   // Handler to toggle password visibility
   const toggleShowPassword = () => {
@@ -40,17 +44,19 @@ const LoginForm = () => {
   } = useForm({ mode: "onChange", resolver: zodResolver(schema) });
 
   const navigate = useNavigate();
-  const authService = AuthService();
 
   const onSubmit = async (data) => {
+    console.log(`response :`)
     try {
-      const response = await authService.login(data);
+      const response = await dispatch(loginAction(data)).unwrap(); // unwrap() akan mengurai hasil dari thunk
+      console.log(`response : ${response}`);
       if (response) {
-        const token = response.data.token;
+        const token = response.token;
         console.log('Token:', token);
         localStorage.setItem('token', token);
-        localStorage.setItem('userId', response.data.userId)
-        // navigate("/home");
+        localStorage.setItem('userId', response.userId);
+        dispatch(getUserDataAction(response.userId));
+        navigate("/home");
       }
     } catch (error) {
       console.error("Error while logging in:", error);
@@ -59,10 +65,10 @@ const LoginForm = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token && authService.validateToken(token)) {
+    if (token && dispatch(validateTokenAction(token))) {
       navigate("/home");
     }
-  }, [authService, navigate]);
+  }, [navigate]);
 
   return (
     <div className="mt-8 font-urbanist">
@@ -125,7 +131,10 @@ const LoginForm = () => {
             Forgot Password
           </p>
         </div>
-        <button className="bg-[#07C9F0] py-2 rounded-3xl mt-3 active:scale-95">
+        <button
+          type="submit"
+          className="bg-[#07C9F0] py-2 rounded-3xl mt-3 active:scale-95"
+        >
           <span className="font-semibold text-white text-sm">Log In</span>
         </button>
       </form>

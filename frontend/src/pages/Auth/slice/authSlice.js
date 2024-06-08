@@ -8,8 +8,10 @@ const authService = AuthService();
 export const loginAction = createAsyncThunk(
   'auth/login',
   async (payload) => {
+    
     const response = await authService.login(payload);
-    return response.data; // Mengembalikan data dari response
+    console.log(`data login : ${JSON.stringify(response)}`)
+    return response; // Mengembalikan data dari response
   }
 );
 
@@ -31,6 +33,15 @@ export const validateTokenAction = createAsyncThunk(
   }
 );
 
+export const getUserDataAction = createAsyncThunk(
+  'auth/getUserData',
+  async (userId) =>{
+    const response = await authService.getUserData(userId);
+    console.log(`sdfsdf32 : ${JSON.stringify(response)}`)
+    return response;
+  }
+)
+
 // Membuat slice
 const authSlice = createSlice({
   name: 'auth',
@@ -40,6 +51,7 @@ const authSlice = createSlice({
     isLoading: false,
     error: null,
     isAuthenticated: false,
+    userProfile : null
   },
   reducers: {
     // Tambahkan reducer untuk logout jika diperlukan
@@ -57,8 +69,8 @@ const authSlice = createSlice({
       })
       .addCase(loginAction.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = payload.user;
-        state.token = payload.token;
+        // state.user = payload.user;
+        // state.token = payload.token;
         state.isAuthenticated = true;
       })
       .addCase(loginAction.rejected, (state, { error }) => {
@@ -85,6 +97,18 @@ const authSlice = createSlice({
         state.isAuthenticated = payload;
       })
       .addCase(validateTokenAction.rejected, (state, { error }) => {
+        state.isLoading = false;
+        state.error = error.message;
+      })
+      .addCase(getUserDataAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getUserDataAction.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.userProfile = payload;
+      })
+      .addCase(getUserDataAction.rejected, (state, { error }) => {
         state.isLoading = false;
         state.error = error.message;
       });

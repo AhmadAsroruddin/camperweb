@@ -9,9 +9,9 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const dispatch = useDispatch();
-  // const userProfile = useSelector((state) => state.userProfile.userProfile);
+  const u = useSelector((state) => state.user.userProfile);
   // const isLoading = useSelector((state) => state.userProfile.isLoading);
-
+  
   useEffect(() => {
     // dispatch(getUserProfileAction());
   }, [dispatch]);
@@ -29,6 +29,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
 
 
   useEffect(() => {
+    console.log(`dsad ${u}`)
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setScrolled(true);
