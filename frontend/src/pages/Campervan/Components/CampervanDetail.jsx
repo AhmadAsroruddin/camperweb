@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTravelDetailById } from "../slice/slice";
 import Loading from "../../../shared/Animation/Loading";
 import { useNavigate } from "react-router-dom";
+import { deleteTravelAction } from "../slice/slice";
 
 const TravelDetail = () => {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ const TravelDetail = () => {
   const handleDelete = () => {
     // Handle delete logic here
     console.log("Delete button clicked");
+    dispatch(deleteTravelAction({travelId}))
+    navigate("/travels")
+    window.location.reload();
+
   };
 
   if (isLoading) {

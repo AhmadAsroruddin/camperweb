@@ -42,13 +42,24 @@ const TravelService = () => {
         }
       };    
 
+    const deleteTravel = async(travelId) =>{
+        try{
+            const response = await axiosInstance.delete(`/campervan/delete/${travelId}`);
+            console.log(`this is in service ${travelId}`)
+            return response.data;
+        }catch(e){ 
+            console.log(e)
+            throw new Error(`Failde to delete travel id ${travelId}`);
+        }
+    }
     return {
         createTravel,
         getAllData,
         getTravelById,
         getTravelByUserId,
         getAllParticipantByTripId,
-        updateTravelById
+        updateTravelById,
+        deleteTravel
     }
 }
 

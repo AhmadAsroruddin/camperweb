@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import TravelService from "../service/service";
 
-const { createTravel, getAllData, getTravelById, getTravelByUserId, getAllParticipantByTripId, updateTravelById } = TravelService();
+const { createTravel, getAllData, getTravelById, getTravelByUserId, getAllParticipantByTripId, updateTravelById, deleteTravel } = TravelService();
 
 const initialState = {
   travel: null,
@@ -96,6 +96,21 @@ export const updateTravelByIdAction = createAsyncThunk(
   }
 );
 
+export const deleteTravelAction = createAsyncThunk(
+  "travel/deleteTravel",
+  async({travelId}) =>{
+    try{
+      console.log(`this is in service ${travelId}`)
+      const response = await deleteTravel(travelId);
+
+      return response;
+    }catch(e){
+      console.log(e)
+      throw new Error(`Failde to delete travel id ${travelId}`);
+    }
+  }
+)
+
 const travelsSlice = createSlice({
   name: "travels",
   initialState,
@@ -168,6 +183,17 @@ const travelsSlice = createSlice({
         state.travel = action.payload;
       })
       .addCase(updateTravelByIdAction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(deleteTravelAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteTravelAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteTravelAction.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

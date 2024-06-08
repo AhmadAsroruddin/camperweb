@@ -45,6 +45,7 @@ const TravelEdit = () => {
   useEffect(() => {
     if (travelId) {
       dispatch(getTravelDetailById(travelId));
+
     }
   }, [dispatch, travelId]);
 
@@ -52,6 +53,8 @@ const TravelEdit = () => {
     try {
        dispatch(updateTravelByIdAction({ travelId, payload: data }));
        navigate('/travels')
+       window.location.reload();
+
     } catch (error) {
       console.error("Error updating travel:", error);
     }
