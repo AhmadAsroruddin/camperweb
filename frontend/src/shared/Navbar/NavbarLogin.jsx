@@ -9,7 +9,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const dispatch = useDispatch();
-  const u = useSelector((state) => state.user.userProfile);
+  const userProfile = useSelector((state) => state.auth.userProfile); // Mengambil userProfile dari state
   // const isLoading = useSelector((state) => state.userProfile.isLoading);
   
   useEffect(() => {
@@ -29,7 +29,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
 
 
   useEffect(() => {
-    console.log(`dsad ${u}`)
+    console.log(`dsad ${JSON.stringify(userProfile?.username)}`)
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setScrolled(true);
@@ -42,7 +42,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [userProfile]);
 
   return (
     <div
@@ -79,7 +79,7 @@ const NavbarLogin = ({ textColor, logo, bgColor }) => {
                 className="flex items-center gap-[15px] relative"
                 onClick={showDropDown}
               >
-                <p>{'Guest'}</p>
+                <p>{userProfile?.username}</p>
                 <div className="h-[50px] w-[50px] rounded-full bg-primary cursor-pointer flex items-center justify-center relative">
                   <button
                     data-bs-toggle="dropdown"

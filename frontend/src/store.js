@@ -11,6 +11,6 @@ export default configureStore({
     login: loginReducer,
     user: authReducer,
     travel: travelsSlice.reducer,
-    
+    auth: authReducer
   },
 });
